@@ -1,62 +1,33 @@
 async function run() {
   const puppeteer = require('puppeteer')
   const fs = require('fs')
+  const { prepareDir } = require('./utils')
 
   const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage()
   const dir = './data'
 
-  const createDir = () => {
-    try {
-      fs.mkdirSync(dir)
-
-      console.log(`>>> ${dir} is created!`)
-    } catch (err) {
-      console.error(`>>> Error while creating ${dir}.`, err)
-    }
-  }
-
-  const deleteDir = () => {
-    try {
-      fs.rmSync(dir, { recursive: true })
-
-      console.log(`>>> ${dir} is deleted!`)
-    } catch (err) {
-      console.error(`>>> Error while deleting ${dir}.`, err)
-    }
-  }
-
-  if (fs.existsSync(dir)) {
-    console.log('>>> Directory exists! Deleting directory ...')
-    deleteDir()
-    console.log('>>> Creating new directory ...')
-    createDir()
-  } else {
-    console.log('>>> Directory not found.')
-    console.log('>>> Creating new directory ...')
-    createDir()
-  }
-
   await page.goto(
     'https://awscli.amazonaws.com/v2/documentation/api/latest/reference/index.html',
   )
 
+  prepareDir()
   const results = []
-  let i = 0
+  //let i = 0
   const services = await page.$$('.toctree-l1 a')
   console.log('>>> Parsing ...')
   for (const service of services) {
-    if (i < 2) {
-      const service_data = await page.evaluate((el) => {
-        return {
-          service_name: el?.innerText,
-          service_url: el?.href,
-          service_commands: [],
-        }
-      }, service)
-      results.push(service_data)
-      i++
-    }
+    //if (i < 2) {
+    const service_data = await page.evaluate((el) => {
+      return {
+        service_name: el?.innerText,
+        service_url: el?.href,
+        service_commands: [],
+      }
+    }, service)
+    results.push(service_data)
+    //i++
+    //}
   }
 
   for (const service of results) {
@@ -119,7 +90,7 @@ async function run() {
   }
 
   browser.close()
-  console.log('>>>  Done')
+  console.log('>>> Done')
 }
 
 run()
