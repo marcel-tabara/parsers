@@ -1,0 +1,13 @@
+{
+  "name": "puppeteer_test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "aws-cli": "node aws-cli.js"
+  },
+  "dependencies": {
+    "puppeteer": "^10.4.0"
+  }
+}
